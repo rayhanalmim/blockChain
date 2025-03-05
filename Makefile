@@ -48,3 +48,6 @@ deploy-zk-bad:
 
 verify:
 	@forge verify-contract --chain-id 11155111 --num-of-optimizations 200 --watch --constructor-args 0x00000000000000000000000000000000000000000000d3c21bcecceda1000000 --etherscan-api-key $(ETHERSCAN_API_KEY) --compiler-version v0.8.19+commit.7dd6d404 0x089dc24123e0a27d44282a1ccc2fd815989e3300 src/OurToken.sol:OurToken
+
+
+forge script script/DeployOurToken.s.sol:DeployOurToken --rpc-url https://eth-sepolia.g.alchemy.com/v2/GIGzKPGbo2k_FJH72PzS4mS6buC_PbBo --private-key 25265b4b5679ce4c3a10af5450c12dd86c4c391608485291b499d97961ceecd8 --broadcast --legacy

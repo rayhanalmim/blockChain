@@ -6,10 +6,13 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 
 contract OurToken is ERC20, Ownable, Pausable {
-    uint256 public immutable i_MAX_SUPPLY = 100_000 * 10 ** 18;
+    uint256 public immutable i_MAX_SUPPLY;
 
-    constructor(uint256 INITIAL_SUPPLY) ERC20("Taka", "BDT") Ownable(msg.sender) {
-       i_MAX_SUPPLY = INITIAL_SUPPLY;
+    constructor(
+        uint256 initialSupply
+    ) ERC20("Taka", "BDT") Ownable(msg.sender) {
+        require(initialSupply > 0, "Initial supply must be greater than zero");
+        i_MAX_SUPPLY = initialSupply;
     }
 
     /// @notice Mint new tokens, onlyOwner
@@ -26,13 +29,6 @@ contract OurToken is ERC20, Ownable, Pausable {
         _burn(msg.sender, amount);
     }
 
-    /// @notice Burn tokens from the total supply (onlyOwner)
-    /// @param amount The amount to burn
-    function burnFromTotalSupply(uint256 amount) external onlyOwner {
-        require(totalSupply() >= amount, "Not enough total supply to burn");
-        _burn(address(this), amount);
-    }
-
     /// @notice Pause token transfers (OnlyOwner)
     function pause() external onlyOwner {
         _pause();
@@ -41,13 +37,6 @@ contract OurToken is ERC20, Ownable, Pausable {
     /// @notice Unpause token transfers (OnlyOwner)
     function unpause() external onlyOwner {
         _unpause();
-    }
-
-    /// @notice Get the balance of a specific account
-    /// @param account The address to query the balance for
-    /// @return The balance of the given account
-    function balanceOf(address account) public view override returns (uint256) {
-        return super.balanceOf(account);
     }
 
     /// @notice Transfer tokens from caller to another account
