@@ -4,6 +4,7 @@ pragma solidity ^0.8.19;
 import {DeployOurToken} from "../script/DeployOurToken.s.sol";
 import {OurToken} from "../src/OurToken.sol";
 import {Test, console} from "forge-std/Test.sol";
+import {EnforcedPause} from "../src/OurToken.sol";
 
 interface MintableToken {
     function mint(address, uint256) external;
@@ -64,8 +65,10 @@ contract OurTokenTest is Test {
     function testPauseAndUnpause() public {
         vm.prank(address(this));
         ourToken.pause();
+
+        // Update the expected revert error to "EnforcedPause.selector"
         vm.prank(bob);
-        vm.expectRevert("Pausable: paused");
+        vm.expectRevert(EnforcedPause.selector); // <-- Change this line
         ourToken.transfer(alice, 10 ether);
 
         vm.prank(address(this));

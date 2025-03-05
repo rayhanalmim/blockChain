@@ -5,6 +5,8 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 
+error EnforcedPause();
+
 contract OurToken is ERC20, Ownable, Pausable {
     uint256 public immutable i_MAX_SUPPLY;
 
@@ -47,6 +49,9 @@ contract OurToken is ERC20, Ownable, Pausable {
         address to,
         uint256 value
     ) public override whenNotPaused returns (bool) {
+        if (paused()) {
+            revert EnforcedPause(); // Use custom error when paused
+        }
         require(to != address(0), "Cannot transfer to zero address");
         _transfer(msg.sender, to, value);
         return true;
